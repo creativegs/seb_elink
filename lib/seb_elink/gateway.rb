@@ -48,16 +48,30 @@ class SebElink::Gateway
     send(:class).const_get("V#{options[:version]}_MESSAGE#{options[:message_code]}_SPEC")
   end
 
-  def sign(message_footprint)
-    digest = Digest::SHA1.hexdigest(message_footprint) #=> "a9993e36..."
+  # optionas: {
+  #   version: "00x",
+  #   message_footprint: "001a.."
+  # }
+  def sign(options)
+    digest = send("v#{options[:version]}digest", options[:message_footprint])
+
     Base64.encode64(privkey_rsa.private_encrypt(digest))
   end
 
-  # def verify(message_footprint, )
-
-  # end
+  # options: {
+  #   version: "00x",
+  #   message_footprint:,
+  #   message_signature:
+  # }
+  def verify(options)
+    digest = send("v#{options[:version]}digest", options[:message_footprint])
+  end
 
   private
+    def v001_digest(message_footprint)
+      Digest::SHA1.hexdigest(message_footprint) #=> "a9993e36..."
+    end
+
     def privkey_rsa
       @privkey_rsa ||= OpenSSL::PKey::RSA.new(privkey)
     end

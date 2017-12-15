@@ -4,9 +4,10 @@ class SebElink::Response
   SUPPORTED_VERSIONS = ["001"].freeze
   SUPPORTED_MESSAGES = ["0003", "0004"].freeze
 
-  attr_reader :body
+  attr_reader :gateway_instance, :body
 
-  def initialize(body)
+  def initialize(gateway_instance, body)
+    @gateway_instance = gateway_instance
     @body = body
   end
 
@@ -16,7 +17,16 @@ class SebElink::Response
     validate_message_code
     validate_version
 
-    @valid = true
+    footprint = gateway_instance.produce_footprint({
+      message_code: message_code,
+      version: version
+      skip_validation: true,
+      data: body_hash
+    })
+
+    @valid = gateway_instance.verify({
+      footprint, body_hash[:IB_CRC]
+    })
   end
 
   def to_h(mode=:secure)
