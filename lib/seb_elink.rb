@@ -1,6 +1,8 @@
 require "base64"
 require "openssl"
 
+require "seb_elink/message_specs"
+require "seb_elink/communications"
 require "seb_elink/gateway"
 require "seb_elink/message"
 require "seb_elink/response"

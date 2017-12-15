@@ -62,16 +62,38 @@ message_instance.digital_signature
 ```
 
 __3. SebElink::Response__   
-Instances represent responses from SEB.lv i-bank server.   
+Instances represent responses from SEB.lv i-bank server.  
+Well-formedness is not validated since if digital signature is OK, one would think that the bank adheres to it's own spec.  
 
-Initialize these with `SebElink::Response.new(response_body)`
+Initialize these with `SebElink::Response.new(gateway_instance, response_body)`
+
+Please note that the method name `#response` is reserved in Rails, use something else for response variable names!
 
 ```rb
 SEB_LV_GATEWAY = SebElink::Gateway.new(<privkey string>)
-response = SebElink::Response.new("IB_SND_ID=TEST...")
 
-# in a Rails controller context you can obtain the response body with:
-# TODO
+# in a Rails controller context you can obtain the response_body with:
+response_body =
+  if request.get?
+    request.query_string
+  else
+    request.raw_post
+  end #=> "IB_SND_ID=TEST..."
+
+response_instance = SebElink::Response.new(SEB_LV_GATEWAY, response_body)
+```
+
+Instances of `SebElink::Response` have two methods:
+
+```rb
+response_instance.valid?
+#=> true, if the digital signature is OK.
+# DO NOT process responses that are invalid, someone has tampered with the values!
+
+response_instance.to_h
+#=> {IB_SND_ID: "TEST", ...}
+# Will raise if called on an ivalid response_instance
+# to override this default safety setting, call with to_h(:insecure)
 ```
 
 Tests have been written in a documenting manner, so, please,

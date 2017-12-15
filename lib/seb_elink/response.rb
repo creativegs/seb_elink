@@ -1,17 +1,51 @@
 class SebElink::Response
+  include SebElink::Communications
+
+  SUPPORTED_VERSIONS = ["001"].freeze
+  SUPPORTED_MESSAGES = ["0003", "0004"].freeze
+
+  attr_reader :body
+
   def initialize(body)
     @body = body
   end
 
   def valid?
-    # looks at IB_VERSION to be 001 to pefrom documented decrypt
-    # can decrypt message0003
-    # can decrypt message0004
+    return @valid if defined?(@valid)
+
+    validate_message_code
+    validate_version
+
+    @valid = true
   end
 
-  def to_h
+  def to_h(mode=:secure)
+    raise SebElink::InvalidResponseError.new(
+      "The response with body '#{body}' is invalid"
+    ) if mode != :insecure && !valid?
 
+    @to_h ||= body_hash
   end
+
+  private
+    def message_code
+      return @message_code if defined?(@message_code)
+
+      @message_code = body_hash[:IB_SERVICE]
+    end
+
+    def version
+      return @version if defined?(@version)
+
+      @version = body_hash[:IB_IB_VERSION]
+    end
+
+    def body_hash
+      @body_hash ||= body.split("&").each_with_object do |q_pair, hash|
+        key, value = q_pair.split("=")
+        hash[key.to_sym] = value.to_s
+      end
+    end
 
   # # 4.2 Message 0003 - Payment order acceptance for processing (P.MU.3 and P.MU.4 parameters):
   # Sequence Parameter title Max length Example of value Description
@@ -45,4 +79,7 @@ class SebElink::Response
   # 8. IB_STATUS 12 ACCOMPLISHED Payment order status
   # 9. IB_CRC 300 Message digital signature
   # 10. IB_LANG 3 LAT Language (possible values: “LAT”, “ENG”, “RUS”)
+end
+
+class SebElink::InvalidResponseError < RuntimeError
 end

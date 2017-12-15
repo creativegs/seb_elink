@@ -102,7 +102,7 @@ RSpec.describe SebElink::Message do
 
         it "raises a descriptive ArgumentError" do
           expect{ subject }.to(
-            raise_error(ArgumentError, %r"IB_SND_ID value format does not match the spec")
+            raise_error(ArgumentError, %r"IB_SND_ID key is absent")
           )
         end
       end
