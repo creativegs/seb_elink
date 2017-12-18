@@ -125,7 +125,11 @@ The project uses TDD approach to software development, follow these steps to set
 6. Make a Pull Request in github
 
 ## Releasing a new version
-TODO
+
+```
+gem push # to set credentials
+rake release
+```
 
 ## License
 
