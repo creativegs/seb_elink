@@ -38,11 +38,14 @@ class SebElink::Message
     })
 
     # 3. Hash-sign the footprint string => obtain "digital signature" of the message
-    digital_signature = gateway_instance.sign(footprint_string)
+    digital_signature = gateway_instance.sign({
+      version: version,
+      message_footprint: footprint_string
+    })
 
     # 4. Append IB_CRC key with the "digital signature" and return the hash
-    spec_set = gateway_instance.spec_for(version: version, message_code: message_code)
-    spec_set.keys.each_with_object({}) do |k, hash|
+    gateway_instance.spec_for(version: version, message_code: message_code).
+    keys.each_with_object({}) do |k, hash|
       hash[k] = data_hash[k] if data_hash.has_key?(k)
     end.merge(IB_CRC: digital_signature)
   end

@@ -1,7 +1,6 @@
-[![Version](https://img.shields.io/gem/v/formatador.svg?style=for-the-badge)](TODO)
+[![Version](https://badge.fury.io/rb/seb_elink.svg)](https://badge.fury.io/rb/seb_elink)
 [![Build](https://circleci.com/gh/CreativeGS/seb_elink/tree/master.svg?style=shield)](https://circleci.com/gh/CreativeGS/seb_elink/tree/master)
 [![Coverage](https://coveralls.io/repos/github/CreativeGS/seb_elink/badge.svg?branch=master)](https://coveralls.io/github/CreativeGS/seb_elink?branch=master)
-[![License](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](LICENSE.txt)
 
 # SebElink
 Lightweight Ruby wrapper for communicating with SEB.lv i-bank payment API.  
@@ -92,6 +91,8 @@ response_body =
   end #=> "IB_SND_ID=TEST..."
 
 response_instance = SebElink::Response.new(SEB_LV_GATEWAY, response_body)
+
+# Please note that the :IB_CRC signature values will often end with "==\n" which, when uri-escaped will be "%3D%3D%0A", pass the response just like that into the initializer 
 ```
 
 Instances of `SebElink::Response` have two methods:
@@ -103,7 +104,7 @@ response_instance.valid?
 
 response_instance.to_h
 #=> {IB_SND_ID: "TEST", ...}
-# Will raise if called on an ivalid response_instance
+# Will raise if called on an invalid response_instance
 # to override this default safety setting, call with to_h(:insecure)
 ```
 

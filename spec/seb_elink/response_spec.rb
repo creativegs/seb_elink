@@ -8,6 +8,10 @@ RSpec.describe SebElink::Response do
   let(:body_params_0004) { valid_0004_response_body_params }
   let(:body) { body_params_0004.map { |k, v| "#{k}=#{v}" }.join("&") }
 
+  before do
+    # binding.pry
+  end
+
   describe "#valid?" do
     subject { response.valid? }
 
@@ -91,6 +95,18 @@ RSpec.describe SebElink::Response do
 
       it "returns a hash representation of it" do
         expect(subject).to match(valid_0004_response_body_params)
+      end
+    end
+
+    context "when called leniently with uri-escaped values" do
+      subject { response.to_h(:insecure) }
+
+      let(:validity_status) { false }
+
+      let(:body_params_0004) { valid_0004_response_body_params.merge(IB_PAYMENT_DESC: "Cookies+%3D+instawin") }
+
+      xit "returns a un unescaped hash representation of it" do
+        expect(subject).to match(hash_including(IB_PAYMENT_DESC: "Cookies = instawin"))
       end
     end
   end
