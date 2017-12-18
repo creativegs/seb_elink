@@ -48,32 +48,48 @@ class SebElink::Gateway
     send(:class).const_get("V#{options[:version]}_MESSAGE#{options[:message_code]}_SPEC")
   end
 
-  # optionas: {
+  # options: {
   #   version: "00x",
   #   message_footprint: "001a.."
   # }
   def sign(options)
-    digest = send("v#{options[:version]}digest", options[:message_footprint])
-
-    Base64.encode64(privkey_rsa.private_encrypt(digest))
+    Base64.encode64(
+      privkey_rsa.sign(
+        send("v#{options[:version]}_digest"), #=> digest algorythm, SHA1
+        options[:message_footprint]
+      )
+    )
   end
 
   # options: {
   #   version: "00x",
-  #   message_footprint:,
-  #   message_signature:
+  #   message:,
+  #   base64_signature:
+  #   # OR
+  #   signature:
   # }
   def verify(options)
-    digest = send("v#{options[:version]}digest", options[:message_footprint])
+    received_binary_signature = options[:signature] ||
+      Base64.decode64(options[:base64_signature])
+
+    ibank_pubkey_rsa.verify(
+      send("v#{options[:version]}_digest"),
+      received_binary_signature,
+      options[:message]
+    )
   end
 
   private
-    def v001_digest(message_footprint)
-      Digest::SHA1.hexdigest(message_footprint) #=> "a9993e36..."
+    def v001_digest
+      OpenSSL::Digest::SHA1.new
     end
 
     def privkey_rsa
       @privkey_rsa ||= OpenSSL::PKey::RSA.new(privkey)
+    end
+
+    def ibank_pubkey_rsa
+      @ibank_pubkey_rsa ||= OpenSSL::X509::Certificate.new(defaults[:IBANK_CERT]).public_key
     end
 
     def raise_length_error(field)

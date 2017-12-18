@@ -1,5 +1,7 @@
 # rspec spec/seb_elink/gateway_spec.rb
 RSpec.describe SebElink::Gateway do
+  include ResponseHelpers
+
   let(:gateway) { described_class.new(test_privkey) }
 
   describe "#ibank_api_uri" do
@@ -10,20 +12,69 @@ RSpec.describe SebElink::Gateway do
     end
   end
 
-  describe "#sign(message_footprint)" do
+  describe "#sign(options)" do
     let(:message_footprint) { "001a002bb" }
+    let(:options) { {version: "001", message_footprint: message_footprint} }
 
     it "produces a base64 ditigal signature for a message from the pre-crunched footprint" do
-      expect(gateway.sign(message_footprint)).to(
+      expect(gateway.sign(options)).to(
         eq(
-          "FaZbf/ACcRQxjZHRyYJ5K7lmtrjdArvIo7LNWc6jKFcK9GLIwrQw4KDQn14E\n"\
-          "JNL2xUnm+KS9Oy7Ji3pNDVYvhjCtCCOF+D0uwnfct70fr3xpGBB0JZKSYyxo\n"\
-          "LrSGiCZI3YkcyhhWR8t3/+KfxhI17wVFy1n9SbtFrqCrQ+JwOGqT02Z8AxMl\n"\
-          "V8oNLE9ZHqX0CZ6M2Ftv+gRLWnLbzwCKQwcerrWRmGWq05EoAf9Du8+X0OIf\n"\
-          "2ghgdKJYiWbSO0XjZKmm6R7QtXgyj0wUq+mDBl7QI+2Rbcon4YUeMobq21iG\n"\
-          "asMfT9YaXxlvsFNszvOhz64JtaMgN7auwQ8iHAx3rw==\n"
+          "aKwfiynsSmR6LbEqqvNKdSZf3ScrpJvZHVR3g78OTydqfaN6RNGC0IfvuQTm\n"\
+          "yJ/Ld1eBtt0zbmgJ46pjEWlpOaggv99EwUb9FYlj0sRYLC5BOcmz7WEOEvQi\n"\
+          "hlc3xoSwXWutJHi/dMfa7oXMBe+7PSTZW+TbL5YeXPfsunCyTWG8ZGixOkdh\n"\
+          "yDrvK04KP6nSk69jpNmdrs0v33iigzHOxmJDTReRUahMF3/BfMNszjDXapAw\n"\
+          "pkzOrMvmAI46F1Q+iRlT0iUprdE6sbuYN+L64BfGpveZeS+8HC06FgJ4ZTmq\n"\
+          "A5/uI/1LTmYGlrPsY4zlmCG1MfZxRIFtPJLiudC+vw==\n"
         )
       )
+    end
+  end
+
+  describe "#verify(options)" do
+    subject { gateway.verify(options) }
+
+    let(:gateway) { described_class.new(test_privkey, {IBANK_CERT: test_ibank_crt}) }
+    let(:ibank_gateway) { described_class.new(test_ibank_privkey) }
+    let(:ibank_message) { valid_0004_response_body_params }
+
+    let(:ibank_message_footprint) do
+      ibank_gateway.produce_footprint({
+        message_code: ibank_message[:IB_SERVICE],
+        version: ibank_message[:IB_VERSION],
+        skip_validation: true,
+        data: ibank_message
+      })
+    end
+
+    let(:ibank_message_signature) do
+      ibank_gateway.sign({
+        message_footprint: ibank_message_footprint,
+        version: ibank_message[:IB_VERSION],
+      })
+    end
+
+    context "when asked to verify an OK message" do
+      let(:options) do
+        {
+          version: "001",
+          message: ibank_message_footprint,
+          base64_signature: ibank_message_signature
+        }
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context "when asked to verify a NOK message" do
+      let(:options) do
+        {
+          version: "001",
+          message: ibank_message_footprint + "evil tinkering",
+          base64_signature: ibank_message_signature
+        }
+      end
+
+      it { is_expected.to eq(false) }
     end
   end
 end

@@ -13,8 +13,7 @@ module SebElink::Communications
     versions = send(:class)::SUPPORTED_VERSIONS
 
     raise ArgumentError.new(
-      "'#{message_code}' is not a supported version. Supported ones are: #{versions}"
+      "'#{version}' is not a supported version. Supported ones are: #{versions}"
     ) unless versions.include?(version)
-
   end
 end

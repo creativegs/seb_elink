@@ -31,4 +31,12 @@ qLSbpmjJ+4xZ4SyPiSgF6GL2969luVdlNV7li7NKfM7SRfIZCoRMkQ==
     HEREDOC
 
   end
+
+  def test_ibank_privkey
+    File.read("#{SebElink.root}/spec/support/raw_test_credentials/fake_seb_lv/fakeseb_nopass.key")
+  end
+
+  def test_ibank_crt
+    File.read("#{SebElink.root}/spec/support/raw_test_credentials/fake_seb_lv/fakeseb.crt")
+  end
 end

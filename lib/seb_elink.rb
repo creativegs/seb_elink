@@ -12,7 +12,7 @@ module SebElink
   extend self
 
   def root
-    Pathname.new(File.expand_path('../..', __FILE__))
+    @@root ||= Pathname.new(Gem::Specification.find_by_name("seb_elink").gem_dir)
   end
 
   DEFAULTS = {

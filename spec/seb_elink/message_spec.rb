@@ -87,12 +87,22 @@ RSpec.describe SebElink::Message do
         end
       end
 
-      context "when called with a full, but invalid set of data" do
+      context "when called with a full, but invalid (length) set of data" do
         let(:data) { super().merge(IB_SND_ID: "FAR TOO LONG") }
 
         it "raises a descriptive ArgumentError" do
           expect{ subject }.to(
             raise_error(ArgumentError, %r"IB_SND_ID value is too long")
+          )
+        end
+      end
+
+      context "when called with a full, but invalid (format) set of data" do
+        let(:data) { super().merge(IB_AMOUNT: "abc") }
+
+        it "raises a descriptive ArgumentError" do
+          expect{ subject }.to(
+            raise_error(ArgumentError, %r"IB_AMOUNT value format does not match the spec")
           )
         end
       end

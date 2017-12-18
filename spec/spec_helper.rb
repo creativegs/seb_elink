@@ -1,5 +1,6 @@
 require "bundler/setup"
 require "cov_helper"
+require "coveralls"; Coveralls.wear!
 require "seb_elink"
 require "pry"
 

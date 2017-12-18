@@ -1,3 +1,8 @@
+[![Version](https://img.shields.io/gem/v/formatador.svg?style=for-the-badge)](TODO)
+[![Build](https://circleci.com/gh/CreativeGS/seb_elink/tree/master.svg?style=shield)](https://circleci.com/gh/CreativeGS/seb_elink/tree/master)
+[![Coverage](https://coveralls.io/repos/github/CreativeGS/seb_elink/badge.svg?branch=master)](https://coveralls.io/github/CreativeGS/seb_elink?branch=master)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](LICENSE.txt)
+
 # SebElink
 Lightweight Ruby wrapper for communicating with SEB.lv i-bank payment API.  
 Solves the cryptographic requirements for you.  
@@ -39,6 +44,12 @@ Additionally, you can rewrite values used by the gem pertaining to SEB.lv i-bank
 }
 ```
 
+Instances of `SebElink::Gateway` have one method for public use:
+
+```rb
+gateway.ibank_api_uri #=> uri for POSTing intial message to.
+```
+
 __2. SebElink::Message__   
 Instances represent requests to i-bank, generally for payment.  
 
@@ -49,7 +60,7 @@ SEB_LV_GATEWAY = SebElink::Gateway.new(<privkey string>)
 message_instance = SebElink::Message.new(SEB_LV_GATEWAY, "0002", {IB_SND_ID: ...})
 ```
 
-Please consult message.rb for the full list of data_hash keys.  
+Please consult `message_specs.rb` for the full list of data_hash keys.  
 
 Instances of `SebElink::Message` have two methods:
 
@@ -58,7 +69,7 @@ message_instance.to_h
 #=> hash of all fields you need to POST to i-bank API uri.
 
 message_instance.digital_signature
-#=> outputs the value of :IB_CRC key, the digital signature of the message
+#=> outputs the value of :IB_CRC key, the base64-encoded digital signature of the message
 ```
 
 __3. SebElink::Response__   
