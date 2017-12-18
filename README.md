@@ -14,7 +14,7 @@ gem 'seb_elink'
 ```
 
 ## Usage
-Please note that for consistency in this gem all hash keys are constant-case __symbols__.
+Please note that for consistency in this gem all hash keys are constant-case __symbols__ like `:IB_VERSION`.
 
 The gem has three elements represented as Ruby classes:
 
