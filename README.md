@@ -18,7 +18,7 @@ Please note that for consistency in this gem all hash keys are constant-case __s
 
 The gem has three elements represented as Ruby classes:
 
-__1. SebElink::Gateway__  
+### 1. SebElink::Gateway  
 Think of this as the communication adapter. Initialize it with a base64-encoded private key string (the human-readable .pem format). You can store the instance in a constant to reduce processing overhead.  
 
 You can pass an optional options hash as the second argument that will specify default values for communications processed by that gateway instance. Useful for setting company-related data just once.  
@@ -49,7 +49,7 @@ Instances of `SebElink::Gateway` have one method for public use:
 gateway.ibank_api_uri #=> uri for POSTing intial message to.
 ```
 
-__2. SebElink::Message__   
+### 2. SebElink::Message   
 Instances represent requests to i-bank, generally for payment.  
 
 Initialize these with `SebElink::Message.new(gateway_instance, message_code, data_hash)`
@@ -71,7 +71,7 @@ message_instance.digital_signature
 #=> outputs the value of :IB_CRC key, the base64-encoded digital signature of the message
 ```
 
-__3. SebElink::Response__   
+### 3. SebElink::Response
 Instances represent responses from SEB.lv i-bank server.  
 Well-formedness is not validated since if digital signature is OK, one would think that the bank adheres to it's own spec.  
 

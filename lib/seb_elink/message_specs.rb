@@ -86,13 +86,9 @@ module SebElink
       IB_REC_ID: {no: 4, in_signature: true},
       IB_PAYMENT_ID: {no: 5, in_signature: true},
       IB_PAYMENT_DESC: {no: 6, in_signature: true},
-      # -- IB_FROM_SERVER {no: 7, in_signature: true},
-      IB_STATUS: {no: 7, in_signature: true},
+      IB_FROM_SERVER: {no: 7, in_signature: true},
+      IB_STATUS: {no: 8, in_signature: true},
     }.freeze
-
-
-
-
 
   end
 end

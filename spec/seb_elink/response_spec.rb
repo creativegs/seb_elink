@@ -6,11 +6,7 @@ RSpec.describe SebElink::Response do
   let(:response) { described_class.new(gateway, body) }
   let(:body_params_0003) { valid_0003_response_body_params }
   let(:body_params_0004) { valid_0004_response_body_params }
-  let(:body) { body_params_0004.map { |k, v| "#{k}=#{v}" }.join("&") }
-
-  before do
-    # binding.pry
-  end
+  let(:body) { to_query(body_params_0004) }
 
   describe "#valid?" do
     subject { response.valid? }
@@ -44,7 +40,7 @@ RSpec.describe SebElink::Response do
     end
 
     context "when body looks like message '0003', aka P.MU.3 and P.MU.4 of v1" do
-      let(:body) { body_params_0003.map { |k, v| "#{k}=#{v}" }.join("&") }
+      let(:body) { to_query(body_params_0003) }
 
       it "returns the boolean gateway validity check returns" do
         expect(subject).to eq(mocked_validity_status)
@@ -61,13 +57,7 @@ RSpec.describe SebElink::Response do
   describe "#to_h(mode=:secure)" do
     subject { response.to_h }
 
-    let(:validity_status) { true }
-
-    before do
-      allow(response).to(
-        receive(:valid?).and_return(validity_status)
-      )
-    end
+    let(:gateway) { SebElink::Gateway.new(test_privkey, {IBANK_CERT: test_ibank_crt}) }
 
     context "when called without the argument on a valid response" do
       it "returns a hash representation of it" do
@@ -76,7 +66,7 @@ RSpec.describe SebElink::Response do
     end
 
     context "when called without the argument on an invalid response" do
-      let(:validity_status) { false }
+      before { mock_response_to_be(false) }
 
       it "raises a SebElink::InvalidResponseError" do
         expect{ subject }.to(
@@ -91,23 +81,15 @@ RSpec.describe SebElink::Response do
     context "when called with a lenient arg on an invalid response" do
       subject { response.to_h(:insecure) }
 
-      let(:validity_status) { false }
+      before { mock_response_to_be(false) }
 
       it "returns a hash representation of it" do
         expect(subject).to match(valid_0004_response_body_params)
       end
     end
 
-    context "when called leniently with uri-escaped values" do
-      subject { response.to_h(:insecure) }
-
-      let(:validity_status) { false }
-
-      let(:body_params_0004) { valid_0004_response_body_params.merge(IB_PAYMENT_DESC: "Cookies+%3D+instawin") }
-
-      xit "returns a un unescaped hash representation of it" do
-        expect(subject).to match(hash_including(IB_PAYMENT_DESC: "Cookies = instawin"))
-      end
+    def mock_response_to_be(status)
+      allow(gateway).to receive(:verify).and_return(status)
     end
   end
 end

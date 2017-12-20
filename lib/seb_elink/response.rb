@@ -26,8 +26,8 @@ class SebElink::Response
 
     @valid = gateway_instance.verify({
       version: version,
-      message_footprint: footprint,
-      message_signature: body_hash[:IB_CRC]
+      message: footprint,
+      base64_signature: body_hash[:IB_CRC]
     })
   end
 
@@ -41,9 +41,9 @@ class SebElink::Response
 
   private
     def body_hash
-      @body_hash ||= body.split("&").each_with_object({}) do |q_pair, hash|
-        pair = q_pair # CGI.unescape(q_pair)
-        split_index = CGI.unescape(pair).index("=")
+      # @body_hash ||= body.split("&").each_with_object({}) do |q_pair, hash|
+      @body_hash ||= CGI.unescape(body).split("&").each_with_object({}) do |pair, hash|
+        split_index = pair.index("=")
         key, value = pair[0..(split_index - 1)], pair[split_index.next..-1]
         hash[key.to_sym] = value.to_s
       end

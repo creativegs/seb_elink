@@ -1,4 +1,19 @@
 module ResponseHelpers
+  def valid_0002_request_body_params
+    {
+      IB_SND_ID: "TESTACC",
+      IB_SERVICE: "0002",
+      IB_VERSION: "001",
+      IB_AMOUNT: "9.95",
+      IB_CURR: "EUR",
+      IB_NAME: "Test Inc.",
+      IB_PAYMENT_ID: "12345",
+      IB_PAYMENT_DESC: "Purchase 12345 from Test Inc.",
+      IB_FEEDBACK: "https://return.com/some/path",
+      IB_LANG: "ENG",
+    }
+  end
+
   def valid_0003_response_body_params
     {
       IB_SND_ID: "TESTACC",
@@ -42,12 +57,12 @@ module ResponseHelpers
       IB_FROM_SERVER: "Y",
       IB_STATUS: "ACCOMPLISHED",
       IB_CRC:
-        "URCjDF7jP9XEYSHCdu8q6d7ifXCIkqE5z3VSprFeF57uqTjovqVVN1oG3etj\n"\
-        "UhvMYAkqDdl6Ej4h/lVqxsTFMSlGxgxZRp48nriW4TzCrn1eXdPjUIPN6zHk\n"\
-        "cxLS+Vs8UVrBaCxSjVQGRkSfSWviuaM+a0rdbN7a0UKrbdpPclHbqCru2/Q3\n"\
-        "Lywihs4n8ZdanHGRLk0i7FeNZrb0tq5pQzSBM2T6mjT2bNKldNIeivpc+0O9\n"\
-        "lQ1+ImIrlJ9yEJaHMmYwegCzx9eWDxNxeXsvd2eRCum0j9d2lfMv3OjM629z\n"\
-        "mVbTNb4u+qof27zRRKWFbwCikjHN5tdGDoAPZ+wy3Q==\n",
+        "amXWCuUQ0oHoa1IEyKvhB4/6Z3jRD27MWHofFs9dFJ1eAMM8CzSU05sglKWL\n"\
+        "LbfbHou/qPuo3r6GrGI5Pw6gmz/8xHMlNJInrmE/8psOLmgiIYXdisto5lsL\n"\
+        "bRjJVf++sLO8C04seLOK8T3IiF7MYhx2ShpBJvbFajSTbwXsRZLz4Rwi9jC+\n"\
+        "NGp+zPfNHh8ZAca9XmnPKgCsR6eJC0lot/uJa79dOYM/opiYW1i3PkUYzNZB\n"\
+        "Y3OdGqWItVLwMMlpRY+9rkLxYpRDf/6boYVGIijeMGWHSoVsEYu4g762iwKy\n"\
+        "C8rwuPxywtuZXEVlqK4c3x4QOrt266aV6qkbPgGf9w==\n",
       IB_LANG: "ENG",
     }
   end
@@ -56,8 +71,8 @@ module ResponseHelpers
     to_query(valid_0004_response_body_params)
   end
 
-  private
-    def to_query(hash)
-      hash.map { |k, v| "#{k}=#{v}" }.join("&")
-    end
+  def to_query(hash)
+    hash.map { |k, v| "#{k}=#{CGI.escape(v)}" }.join("&")
+  end
+
 end

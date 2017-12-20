@@ -12,6 +12,30 @@ RSpec.describe SebElink::Gateway do
     end
   end
 
+  describe "#produce_footprint(options)" do
+    subject { gateway.produce_footprint(options) }
+
+    context "when called with message 0002 options" do
+      let(:options) do
+        {
+          message_code: "0002",
+          version: "001",
+          skip_validation: false,
+          data: valid_0002_request_body_params
+        }
+      end
+
+      it "returns a verified message footprint for signing" do
+        expect(subject).to(
+          eq(
+            "007TESTACC00400020030010049.95003EUR009Test Inc.00512345"\
+            "029Purchase 12345 from Test Inc."
+          )
+        )
+      end
+    end
+  end
+
   describe "#sign(options)" do
     let(:message_footprint) { "001a002bb" }
     let(:options) { {version: "001", message_footprint: message_footprint} }
