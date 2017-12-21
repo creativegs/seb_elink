@@ -32,7 +32,7 @@ module SebElink
 
     # # 4.2 Message 0003 - Payment order acceptance for processing (P.MU.3 and P.MU.4 parameters):
     # Sequence Parameter title Max length Example of value Description
-    # 1. IB_SND_ID 10 B1 Request sender (Banks ID)
+    # 1. IB_SND_ID 10 SEBUB Request sender (Bank's ID)
     # 2. IB_SERVICE 4 0003 Code of the Internet bank request type
     # 3. IB_VERSION 3 001 ID of used digital signature algorithm
     # 4. IB_PAYMENT_ID 20 UB0000000000015 Payment order reference number
@@ -63,13 +63,12 @@ module SebElink
       IB_PAYER_NAME: {no: 11, in_signature: true},
       IB_PAYMENT_DESC: {no: 12, in_signature: true},
       IB_PAYMENT_DATE: {no: 13, in_signature: true},
-      IB_PAYMENT_TIME: {no: 14, in_signature: true},
-      IB_PAYMENT_TIME: {no: 15, in_signature: true}
+      IB_PAYMENT_TIME: {no: 14, in_signature: true}
     }.freeze
 
     # # 4.3 Message 0004 - Payment order execution or cancellation (P.MU.2 and P.MU.5 parameters):
     # Sequence, Parameter title, Max length, Example of value, Description
-    # 1. IB_SND_ID 10 B1 Request sender (Banks ID)
+    # 1. IB_SND_ID 10 SEBUB Request sender (Bank's ID)
     # 2. IB_SERVICE 4 0004 Code of the Internet bank request type
     # 3. IB_VERSION 3 001 ID of used digital signature algorithm
     # 4. IB_REC_ID 10 AAA Beneficiary’s identifier (in this case: “AAA”)
@@ -86,7 +85,7 @@ module SebElink
       IB_REC_ID: {no: 4, in_signature: true},
       IB_PAYMENT_ID: {no: 5, in_signature: true},
       IB_PAYMENT_DESC: {no: 6, in_signature: true},
-      IB_FROM_SERVER: {no: 7, in_signature: true},
+      IB_FROM_SERVER: {no: 7, in_signature: true}, # NB, for 0003 this is not in signature, but for 0004 it is
       IB_STATUS: {no: 8, in_signature: true},
     }.freeze
 
