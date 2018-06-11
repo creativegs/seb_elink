@@ -63,7 +63,7 @@ module SebElink
       IB_PAYER_NAME: {no: 11, in_signature: true},
       IB_PAYMENT_DESC: {no: 12, in_signature: true},
       IB_PAYMENT_DATE: {no: 13, in_signature: true},
-      IB_PAYMENT_TIME: {no: 14, in_signature: true}
+      IB_PAYMENT_TIME: {no: 14, in_signature: true},
     }.freeze
 
     # # 4.3 Message 0004 - Payment order execution or cancellation (P.MU.2 and P.MU.5 parameters):
