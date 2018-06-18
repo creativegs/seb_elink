@@ -36,7 +36,10 @@ class SebElink::Gateway
       end
 
       # 2. build the 'len(p1)||p1..' string
-      "#{data_hash[field].to_s.bytesize.to_s.rjust(3, "0")}#{data_hash[field]}"
+      # This here is weak. Handling accented unicode is one, but chinese characters will break thos logic
+      length = data_hash[field].size.to_s.rjust(3, "0")
+
+      "#{length}#{data_hash[field]}"
     end.join("")
   end
 
@@ -74,7 +77,7 @@ class SebElink::Gateway
 
     ibank_pubkey_rsa.verify(
       send("v#{options[:version]}_digest"),
-      received_binary_signature,
+      received_binary_signature, # from privkey.sign(OpenSSL::Digest::SHA1.new, data)
       options[:message]
     )
   end
