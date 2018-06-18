@@ -41,7 +41,6 @@ class SebElink::Response
 
   private
     def body_hash
-      # @body_hash ||= body.split("&").each_with_object({}) do |q_pair, hash|
       @body_hash ||= CGI.unescape(body).split("&").each_with_object({}) do |pair, hash|
         split_index = pair.index("=")
         key, value = pair[0..(split_index - 1)], pair[split_index.next..-1]

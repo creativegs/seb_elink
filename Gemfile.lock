@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    seb_elink (1.0.0)
+    seb_elink (1.0.1.pre.beta1)
 
 GEM
   remote: https://rubygems.org/
