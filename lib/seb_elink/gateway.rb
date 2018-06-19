@@ -37,7 +37,7 @@ class SebElink::Gateway
 
       # 2. build the 'len(p1)||p1..' string
       # This here is weak. Handling accented unicode is one, but chinese characters will break thos logic
-      length = data_hash[field].size.to_s.rjust(3, "0")
+      length = data_hash[field].to_s.size.to_s.rjust(3, "0")
 
       "#{length}#{data_hash[field]}"
     end.join("")
