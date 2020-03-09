@@ -53,7 +53,7 @@ RSpec.describe SebElink::Response do
             "IB_SND_ID"=>"SEBUB", "IB_SERVICE"=>"0003", "IB_VERSION"=>"001",
             "IB_PAYMENT_ID"=>"1192579", "IB_AMOUNT"=>"6.95", "IB_CURR"=>"EUR",
             "IB_REC_ID"=>"DIET", "IB_REC_ACC"=>"LV74UNLA0055000378910",
-            "IB_REC_NAME"=>"LIFE APPS SIA",
+            "IB_REC_NAME"=>"SCIENCE22 SIA",
             "IB_PAYER_ACC"=>"LV37UNLA0050004858444",
             "IB_PAYER_NAME"=>"REINIS LIMONCIKS",
             "IB_PAYMENT_DESC"=>"desc",
